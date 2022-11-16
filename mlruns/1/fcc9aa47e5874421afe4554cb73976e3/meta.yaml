@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/sage/Documents/soil/mlruns/1/fcc9aa47e5874421afe4554cb73976e3/artifacts
+end_time: 1667735114960
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+name: ''
+run_id: fcc9aa47e5874421afe4554cb73976e3
+run_uuid: fcc9aa47e5874421afe4554cb73976e3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1667733558015
+status: 3
+tags: []
+user_id: sage
