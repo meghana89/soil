@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 model = load_model('my_best_model')
 cols = ['Magna_6 Meteo Air Pressure (hpa)',
-        'Magna_6 Meteo Dew Point Temperature (C)', 
+        'Magna_6 Meteo Dew Point Temperature (C)',
         'Magna_6 Water EC muS/cm',
         'Magna_6 Water Level Above Sensor mm',
         'segment1(EC)',
@@ -35,17 +35,16 @@ def predict():
     final = np.array(int_features)
     data_unseen = pd.DataFrame([final], columns = cols)
     prediction = predict_model(model, data=data_unseen, round = 0)
-    prediction = int(prediction.y_pred[0])
-    return render_template('home.html',pred='the expected moisture content is: {}'.format(prediction))
+    prediction = int(prediction.prediction_label[0])
+    return render_template('home.html',pred='the moisture content is expected to be {}'.format(prediction))
 
 @app.route('/predict_api',methods=['POST'])
 def predict_api():
     data = request.get_json(force=True)
     data_unseen = pd.DataFrame([data])
     prediction = predict_model(model, data=data_unseen)
-    output = prediction.y_pred[0]
+    output = prediction.prediction_label[0]
     return jsonify(output)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
-    
+    app.run(debug=True)
