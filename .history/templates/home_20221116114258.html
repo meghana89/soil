@@ -19,11 +19,9 @@
             <h1>Soil Moisture Forecasting</h1>
             <div class="container text-center">
                 <!-- Form to enter new data for predictions  -->
-                
                 <div class="row align-items-start">
-                <form action="{{ url_for('predict')}}" method="POST">
                     <div class="col-6">
-                       
+                        <form action="{{ url_for('predict')}}" method="POST">
                             <input type="number" name="Magna_6 Meteo Air Pressure (hpa)" placeholder="Magna_6 Meteo Air Pressure (hpa)" required="required" /><br>
                             <input type="number" name="Magna_6 Meteo Dew Point Temperature (C)" placeholder="Magna_6 Meteo Dew Point Temperature (C)" required="required" /><br>
                             <input type="number" name="Magna_6 Water EC muS/cm" placeholder="Magna_6 Water EC muS/cm" required="required" /><br>
@@ -33,10 +31,10 @@
                             <input type="number"name="Magna_6 ORP_mV" placeholder="Magna_6 ORP_mV" required="required" /><br>
                             <input type="number" name="Magna_6 pH_Sensor_Temperature_C" placeholder="Magna_6 pH_Sensor_Temperature_C" required="required" /><br>
                             <input type="number" name="Air Pressure (x10)" placeholder="Air Pressure (x10)" required="required" /><br>
-                        
+                        </form>
                     </div>
                     <div class="col-6">
-                       
+                        <form action="{{ url_for('predict')}}" method="POST">
                             <input type="number" name="Dew Point Temperature (x10)" placeholder="Dew Point Temperature (x10)" required="required" /><br>
                             <input type="number" name="Magna_6 Cumulative Precipitation_mm" placeholder="Magna_6 Cumulative Precipitation_mm" required="required" /><br>
                             <input type="number" name="Magna_6 CTD_Temperature_C" placeholder="Magna_6 CTD_Temperature_C" required="required" /><br>
@@ -45,9 +43,9 @@
                             <input type="number" name="Metres above MSL" placeholder="Metres above MSL" required="required" /><br>
                             <input type="number"name="TOW _MH2O" placeholder="TOW _MH2O" required="required" /><br>
                             <input type="number" name="Magna_6 Wind Direction" placeholder="Magna_6 Wind Direction" required="required" /><br>
-                      
+                        </form>
                     </div>
-                </form>
+
                     <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
                 </div>
           
