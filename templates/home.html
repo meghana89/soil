@@ -19,9 +19,9 @@
             <h1>Soil Moisture Forecasting</h1>
             <div class="container text-center">
                 <!-- Form to enter new data for predictions  -->
-                
+                <form action="{{ url_for('predict')}}" method="POST">  
                 <div class="row align-items-start">
-                <form action="{{ url_for('predict')}}" method="POST">
+                    
                     <div class="col-6">
                        
                             <input type="number" name="Magna_6 Meteo Air Pressure (hpa)" placeholder="Magna_6 Meteo Air Pressure (hpa)" required="required" /><br>
@@ -47,10 +47,10 @@
                             <input type="number" name="Magna_6 Wind Direction" placeholder="Magna_6 Wind Direction" required="required" /><br>
                       
                     </div>
-                </form>
+              
                     <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
                 </div>
-          
+            </form> 
             </div>
         </div>
         <br>
