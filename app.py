@@ -11,23 +11,16 @@ app = Flask(__name__)
 
 exp = TSForecastingExperiment()
 model =exp.load_model('my_best_model')
-cols = ['Magna_6 Meteo Air Pressure (hpa)',
-        'Magna_6 Meteo Dew Point Temperature (C)',
-        'Magna_6 Water EC muS/cm',
-        'Magna_6 Water Level Above Sensor mm',
-        'segment1(EC)',
-        'Magna_6 PH',
-        'Magna_6 ORP_mV',
-        'Magna_6 pH_Sensor_Temperature_C',
-        'Air Pressure (x10)',
-        'Dew Point Temperature (x10)',
-        'Magna_6 Cumulative Precipitation_mm',
-        'Magna_6 CTD_Temperature_C',
-        'CTD_Pressure_BAR',
-        'CTD_Conductivity__mS',
-        'Metres above MSL',
-        'TOW _MH2O',
-        'Magna_6 Wind Direction']
+cols = ['Magna_6 Wind Direction', 'Magna_6 Wind Speed (m/s)',
+       'Magna_6 Meteo Ambient Temperature (C)',
+       'Magna_6 Meteo Air Pressure (hpa)', 'Magna_6 Meteo Relative Humidity',
+       'Magna_6 Meteo Dew Point Temperature (C)', 'Power Supply (V)',
+       'Magna_6 Water EC muS/cm', 'Magna_6 Water Level Above Sensor mm',
+       'segment1(EC)', 'Magna_6 PH', 'Magna_6 ORP_mV',
+       'Magna_6 pH_Sensor_Temperature_C', 'Magna_6 Precipitation_24hr_mm',
+       'Magna_6 Cumulative Precipitation_mm', 'Magna_6 CTD_Temperature_C',
+       'CTD_Pressure_BAR', 'CTD_Conductivity__mS', 'Metres above MSL',
+       'TOW _MH2O']
 
 @app.route('/')
 def home():
