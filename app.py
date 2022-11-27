@@ -31,7 +31,7 @@ def predict():
     int_features = [x for x in request.form.values()]
     final = np.array(int_features)
     data_unseen = pd.DataFrame([final], columns = cols)
-    prediction = exp.predict_model(model, X=data_unseen, round = 0)
+    prediction = exp.predict_model(model, fh = 1, X=data_unseen)
     prediction = int(prediction.y_pred[0])
     return render_template('home.html',pred='the moisture content is expected to be {}'.format(prediction))
 
@@ -41,7 +41,7 @@ def predict_api():
     data_unseen = pd.DataFrame([data])
     prediction = exp.predict_model(model, data=data_unseen)
     output = prediction.y_pred[0]
-    return jsonify(output)
-
+    #return jsonify(output)
+    return data_unseen
 if __name__ == '__main__':
     app.run(debug=True)
