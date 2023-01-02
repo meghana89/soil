@@ -21,13 +21,15 @@ app.title = "Soil Moisture Dashboard"
 server = app.server
 #basic styling
 SIDEBAR_STYLE= {
+    "background-color": "#eee",
+  "border": "1px solid #ccc",
     "position": "fixed",
     "top": 0,
     "left": 0,
     "bottom": 0,
     "width": "16rem",
     "padding": "2rem 1rem",
-    "background-color": "#3083ff",
+"background-color": "#3083ff",
 }
 colors = {"graph_bg": "#082255",
          "graph_line": "#007ACE",
