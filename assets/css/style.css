@@ -1,0 +1,21 @@
+/*To create a 4-grid layout with CSS*/
+
+.graph {
+    display: flex;
+  flex-wrap: wrap;
+}
+
+.graph > div {
+  width: 45%; /* 4 cells of 25% width each will create a 4-grid layout */
+  height: 500px;
+  background-color: lightgray;
+  border: .29rem solid black;
+  box-sizing: border-box;
+  border-radius: 15px;
+  margin: .51rem;
+}
+.dash-dropdown{
+margin-top: 1rem;
+width: 99%;
+font-size: 1rem;
+}
