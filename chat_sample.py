@@ -11,8 +11,10 @@ import numpy as np
 import datetime as dt
 import dash
 import dash_bootstrap_components as dbc
+#####################################################
+#                    Create the Dash app            #
+####################################################
 
-# Create the Dash app
 app = dash.Dash(
 __name__,
    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=.9"}],
@@ -29,6 +31,7 @@ SIDEBAR_STYLE= {
     "width": "16rem",
     "padding": "2rem 1rem",
     "background-color": "#3083ff",
+    "font-size": "2rem"
 }
 colors = {"graph_bg": "#082255",
          "graph_line": "#007ACE",
@@ -43,7 +46,13 @@ CONTENT_STYLE = {
 # Load data from a CSV file
 df = pd.read_csv("soil.csv")
 df.set_index(['date'], inplace = True)
-# Create a Dropdown menu for selecting a column to display on the bar chart
+
+#####################################################
+#                Create a Dropdown                  #
+#           menu for selecting a column to          #
+#               display on the bar chart            #
+####################################################
+
 
 
 # Create a bar chart
@@ -57,17 +66,29 @@ line_chart = dcc.Graph(id="line-chart")
 sidebar = html.Div(
         [
         html.Div(children=[
-        html.Label('Soil_Properties'),
+        html.Label('Bar Chart'),
         dcc.Dropdown(
             id="bar-chart-dropdown",
             options=[{"label": col, "value": col} for col in df.columns],
             value="pop"
-                    )]
+                    )
+                    ]
+                ),
+           html.Div(children=[
+        html.Label('Line Chart'),
+        dcc.Dropdown(
+            id="line-chart-dropdown",
+            options=[{"label": col, "value": col} for col in df.columns],
+            value="pop"
+                    )
+                    ]
                 )
-            ],
+           ],
         style=SIDEBAR_STYLE
         )
-
+#####################################################
+#                   Call Back                       #
+####################################################
 # Function to update the bar chart
 @app.callback(
     dash.dependencies.Output("bar-chart", "figure"),
@@ -81,19 +102,30 @@ def update_bar_chart(selected_column):
 # Function to update the line chart
 @app.callback(
     dash.dependencies.Output("line-chart", "figure"),
-    [dash.dependencies.Input("bar-chart-dropdown", "value")]
+    [dash.dependencies.Input("line-chart-dropdown", "value")]
 )
 def update_line_chart(selected_column):
     # Create a line chart using Plotly
     figure = px.line(df, x=df.index, y=selected_column, title=selected_column)
     return figure
- # Create a content layout
+#####################################################
+#             # Create a content layout             #
+#####################################################
+
+ 
 content = html.Div([
         
-        html.Div([bar_chart, line_chart])
+        html.Div([bar_chart], className="graph"),
+        html.Div([line_chart], className="graph")
 ], id="page-content", style=CONTENT_STYLE)
  # Create the app layout
 app.layout = html.Div([
+# Include the CSS file in the app
+    html.Link(
+        rel='stylesheet',
+        href='/assets/css/style.css'
+    ),
+
     # header
     html.Div(
             [
