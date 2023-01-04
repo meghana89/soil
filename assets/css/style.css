@@ -1,21 +1,50 @@
 /*To create a 4-grid layout with CSS*/
-
-.graph {
-    display: flex;
-  flex-wrap: wrap;
+.main{
+  margin: 10rem;
+  width: 90%;
+  height: fit-content;
 }
-
-.graph > div {
-  width: 45%; /* 4 cells of 25% width each will create a 4-grid layout */
-  height: 500px;
-  background-color: lightgray;
+.container1 > div {
+  height: fit-content;
   border: .29rem solid black;
   box-sizing: border-box;
   border-radius: 15px;
   margin: .51rem;
 }
+
+.container {
+display: flex;
+width: 100%;
+border-radius: 15px;
+}
+
+.container > div {
+  width: 50%;
+  
+  border: .29rem solid black;
+  box-sizing: border-box;
+  border-radius: 15px;
+  margin: .51rem;
+  box-sizing: border-box;
+ 
+  
+}
+
 .dash-dropdown{
 margin-top: 1rem;
 width: 99%;
 font-size: 1rem;
 }
+P{
+  color: rgb(55, 105, 221);
+}
+.app__header__desc{
+  font-size:1rem;
+  font-weight: bold;
+}
+/*
+#bar-chart #histogram-plot #scatter-plot{
+  height: fit-content;
+  width: fit-content;
+
+}*/
