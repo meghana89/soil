@@ -13,14 +13,14 @@
 }
 
 .container {
-display: flex;
+display: flex ;
+padding: '0 20';
 width: 100%;
 border-radius: 15px;
 }
 
 .container > div {
   width: 50%;
-  
   border: .29rem solid black;
   box-sizing: border-box;
   border-radius: 15px;
