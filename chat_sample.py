@@ -7,6 +7,7 @@ import plotly.subplots as sp
 import plotly.graph_objects as go
 import os
 import pathlib
+import pycaret
 import numpy as np
 import datetime as dt
 import dash
