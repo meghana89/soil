@@ -5,13 +5,11 @@ import pandas as pd
 from plotly.subplots import make_subplots
 import plotly.subplots as sp
 import plotly.graph_objects as go
-import os
-import pathlib
-import pycaret
+#from pycaret.time_series import *
 import numpy as np
-import datetime as dt
-import dash
+from datetime import datetime as dt
 import dash_bootstrap_components as dbc
+
 #####################################################
 #                    Create the Dash app            #
 ####################################################
@@ -34,9 +32,9 @@ SIDEBAR_STYLE= {
     "background-color": "#3083ff",
     "font-size": "2rem"
 }
-colors = {"graph_bg": "#082255",
+colors = {"graph_bg": "#fff",
          "graph_line": "#007ACE",
-         'background': '#111111',
+         'background': '#fff',
             'text': '#111'}
 CONTENT_STYLE = {
         "position": "relative",
@@ -47,32 +45,38 @@ CONTENT_STYLE = {
    
 }
 # Load data from a CSV file
+
 df = pd.read_csv("soil.csv")
 df.sort_values(by='date', inplace=True)
-df.set_index(['date'], inplace = True)
+#df.set_index(['date'], inplace = True)
+
 
 
 #####################################################
-#                Create a Dropdown                  #
-#           menu for selecting a column to          #
-#               display on the bar chart            #
+#              setup pycaret module                #
 ####################################################
 
+#####################################################
+#                Create Dropdowns                 #
+#                     #
+####################################################
 
-
-# Create a bar chart
-bar_chart = dcc.Graph(id="bar-chart")
+# Create a scatter chart
+scatter_chart = dcc.Graph(id="scatter-chart")
 
 # Create a line chart
-line_chart = dcc.Graph(id="line-chart")
+fig =px.line(df,x=df['date'], y=df['segment1(10-30cm)'],template = 'plotly_dark')
+                
+line_chart = dcc.Graph(id="line-chart",figure=fig)
 # Create a histogram
+
 histogram_plot = dcc.Graph(id='histogram-plot')
 histogram_dropdown= html.Div(children=[
-                html.Label('Histogram'),
+                html.Label('Select Histogram Column'),
                 dcc.Dropdown(
                 id="histogram-dropdown",
                 options=[{"label": col, "value": col} for col in df.columns],
-                value="pop"
+                value=df.columns[1]
                         )
                         ]
                     )       
@@ -84,31 +88,31 @@ histogram_dropdown= html.Div(children=[
 sidebar = html.Div(
         [
         html.Div(children=[
-        html.Label('Line Chart'),
-        dcc.Dropdown(
-            id="line-chart-dropdown",
-            options=[{"label": col, "value": col} for col in df.columns],
-            value="pop"
-                    )
+        html.Label('Select Date Range'),
+        dcc.DatePickerRange(
+                    id='date-picker-range',
+                    start_date=df['date'].min(),
+                    end_date=df['date'].max()
+                        )
                     ]
                 ),
             html.Br(),
             html.Div(children=[
-            html.Label('Bar Chart'),
+            html.Label('Scatter Plot'),
             dcc.Dropdown(
-            id="bar-chart-dropdown",
+            id="scatter-chart-dropdown",
             options=[{"label": col, "value": col} for col in df.columns],
-            value="pop"
+            value=df.columns[1]
                     )
                     ]
                 ),
             html.Br(),
-            html.Label('Bin Size'),
+            html.Label('Bin Slider'),
             dcc.Slider(
                 id='bin-size-slider',
                 min=1,
                 max=50,
-                value=30,
+                value=20,
                 marks={i: str(i) for i in range(1, 51, 5)},
                 step=None
             ),
@@ -122,35 +126,58 @@ sidebar = html.Div(
 
 # Function to update the line chart
 @app.callback(
-    dash.dependencies.Output("line-chart", "figure"),
-    [dash.dependencies.Input("line-chart-dropdown", "value")]
-)
-def update_line_chart(selected_column):
-    # Create a line chart using Plotly
-    figure = px.line(df, x=df.index, y=selected_column, title=selected_column)
-    return figure
+    dash.dependencies.Output('line-chart', 'figure'),
+    [dash.dependencies.Input('date-picker-range', 'start_date'),
+     dash.dependencies.Input('date-picker-range', 'end_date')])
 
-    # Function to update the bar chart
+def update_line_chart(start_date, end_date):
+    df['date']= pd.to_datetime(df['date'])
+    df['month']=df['date'].dt.month
+    filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
+    fig =px.line(x=filtered_df['date'], y=filtered_df['segment1(10-30cm)'])
+    
+    return fig
+#@app.callback(
+    #dash.dependencies.Output("line-chart", "figure"),
+    #[dash.dependencies.Input("line-chart-dropdown", "value")]
+#)
+#def update_line_chart(selected_column):
+    # Create a line chart using Plotly
+    #df['rolling'] = df[selected_column].rolling(30).mean()
+    #figure=px.line(df, x=df.index, y=[selected_column, "rolling"], title=selected_column,template = 'plotly_dark')
+    #figure = px.line(df, x=df.index, y=selected_column, title=selected_column)
+    #return figure
+
+    # Function to update the scatter chart
 @app.callback(
-    dash.dependencies.Output("bar-chart", "figure"),
-    [dash.dependencies.Input("bar-chart-dropdown", "value")]
+    dash.dependencies.Output("scatter-chart", "figure"),
+    [dash.dependencies.Input("scatter-chart-dropdown", "value"),
+    dash.dependencies.Input('date-picker-range', 'start_date'),
+        dash.dependencies.Input('date-picker-range', 'end_date')]
 )
-def update_bar_chart(selected_column):
-    # Create a bar chart using Plotly
-    figure = px.bar(df, x=df.index, y=selected_column, title=selected_column)
+def update_scatter_chart(selected_column,start_date, end_date):
+    # Create scatter chart using Plotly
+    filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
+    figure=px.scatter(x=filtered_df['date'], y=filtered_df[selected_column], color= filtered_df['month'], title=selected_column)
+    #figure = px.scatter(df, x=df['date'], y=selected_column, title=selected_column)
     return figure
 
 # Function to update the histogram
 @app.callback(
-        Output('histogram-plot', 'figure'),
-        Input('histogram-dropdown', 'value'))
+        dash.dependencies.Output('histogram-plot', 'figure'),
+        [dash.dependencies.Input('histogram-dropdown', 'value'),
+        #dash.dependencies.Input('date-picker-range', 'start_date'),
+        #dash.dependencies.Input('date-picker-range', 'end_date'),
+        dash.dependencies.Input('bin-size-slider', 'value')]
+)
         #,
         #Input('bin-size-slider', 'value'))
 
     
-def update_histogram(value):
+def update_histogram(value, bin_size):
     # Create a histogram chart using Plotly
-    figure=px.histogram(df,x=value )
+    figure = go.Figure(data=[go.Histogram(x=df[value], nbinsx=bin_size)])
+    #figure=px.histogram(df,x=[value],nbinsx=bin_size, template = 'plotly_dark' )
     return figure
 
 #####################################################
@@ -164,7 +191,7 @@ html.Div([
         html.Div([line_chart], className="graph"),
 ],className="container1"),
 html.Div([
-            html.Div([bar_chart], className="graph"),
+            html.Div([scatter_chart], className="graph"),
             html.Div([histogram_plot], className="graph")
                     
             #html.Div([scatter_chart], className="graph")
@@ -204,4 +231,4 @@ app.layout = html.Div([
     
 # Run the app
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
