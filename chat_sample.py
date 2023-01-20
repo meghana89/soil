@@ -22,28 +22,11 @@ __name__,
 app.title = "Soil Moisture Dashboard"
 server = app.server
 #basic styling
-SIDEBAR_STYLE= {
-    "position": "fixed",
-    "top": 0,
-    "left": 0,
-    "bottom": 0,
-    "width": "16rem",
-    "padding": "2rem 1rem",
-    "background-color": "#3083ff",
-    "font-size": "2rem"
-}
+
 colors = {"graph_bg": "#fff",
          "graph_line": "#007ACE",
          'background': '#fff',
-            'text': '#111'}
-CONTENT_STYLE = {
-        "position": "relative",
-       "margin-left": "8rem",
-    "margin-right": "2rem",
-    "padding": "2rem 1rem",
-    'background-color' : '#f0f3f7',
-   
-}
+         'text': '#111'}
 # Load data from a CSV file
 
 df = pd.read_csv("soil.csv")
@@ -131,8 +114,7 @@ sidebar = html.Div(
                 step=None
             ),
              html.Div([histogram_dropdown]),
-           ],
-        style=SIDEBAR_STYLE
+           ],className='sidebar'
         )
 #####################################################
 #                   Call Back                       #
@@ -222,7 +204,7 @@ html.Div([
 html.Div([
         html.Div([scatter_chart], className="container1"),
         ],className="graph")
-                    ], id="page-content", style=CONTENT_STYLE)
+                    ], id="page-content")
  # Create the app layout
 app.layout = html.Div([
     html.Div([
