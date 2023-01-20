@@ -49,7 +49,11 @@ CONTENT_STYLE = {
 df = pd.read_csv("soil.csv")
 df.sort_values(by='date', inplace=True)
 #df.set_index(['date'], inplace = True)
-
+df['date']= pd.to_datetime(df['date'])
+df['Hour']=df['date'].apply(lambda time: time.hour)
+df['Month']=df['date'].apply(lambda time: time.month)
+df['Year']=df['date'].apply(lambda time: time.year)
+df['DOW']=df['date'].dt.day_name()
 
 
 #####################################################
@@ -80,8 +84,18 @@ histogram_dropdown= html.Div(children=[
                         )
                         ]
                     )       
-# Create a scatterplot
-#scatter_chart = dcc.Graph(id="scatter-plot")
+# Create a heatmap
+heatmap = html.Div([
+                #html.H4('Moisture by DOW'),
+                dcc.Graph(id="heatmap"),
+               # html.P("Day of Week:"),
+                dcc.Checklist(
+                    id='Day_filter',
+                    options=['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',],
+                    value=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                    
+                ),
+            ])
 
 
 #creating sidebar to access multiple apps
@@ -110,10 +124,10 @@ sidebar = html.Div(
             html.Label('Bin Slider'),
             dcc.Slider(
                 id='bin-size-slider',
-                min=1,
-                max=50,
+                min=10,
+                max=101,
                 value=20,
-                marks={i: str(i) for i in range(1, 51, 5)},
+                marks={i: str(i) for i in range(10, 110, 10)},
                 step=None
             ),
              html.Div([histogram_dropdown]),
@@ -158,7 +172,7 @@ def update_line_chart(start_date, end_date):
 def update_scatter_chart(selected_column,start_date, end_date):
     # Create scatter chart using Plotly
     filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
-    figure=px.scatter(x=filtered_df['date'], y=filtered_df[selected_column], color= filtered_df['month'], title=selected_column)
+    figure=px.scatter(x=filtered_df['date'], y=filtered_df[selected_column],  title=selected_column)
     #figure = px.scatter(df, x=df['date'], y=selected_column, title=selected_column)
     return figure
 
@@ -180,6 +194,18 @@ def update_histogram(value, bin_size):
     #figure=px.histogram(df,x=[value],nbinsx=bin_size, template = 'plotly_dark' )
     return figure
 
+@app.callback(
+    Output("heatmap", "figure"), 
+    Input("Day_filter", "value"))
+def filter_heatmap(df2):
+    df2= df.groupby(by = ["DOW", "Hour"]).mean()['segment1(10-30cm)'].unstack()
+    fig = px.imshow(df2, y=df2.index,color_continuous_scale='Viridis',text_auto=True, aspect="auto")
+    fig.update_xaxes(side="top")
+    
+    #fig.data[0].update(row_filter='x == "DOW"')
+    #fig.show()
+    return fig
+
 #####################################################
 #             # Create a content layout             #
 #####################################################
@@ -187,15 +213,16 @@ def update_histogram(value, bin_size):
 
 content = html.Div([
 html.Div([
-        
         html.Div([line_chart], className="graph"),
-],className="container1"),
+        ],className="container1"),
 html.Div([
-            html.Div([scatter_chart], className="graph"),
-            html.Div([histogram_plot], className="graph")
-                    
-            #html.Div([scatter_chart], className="graph")
-], className="container")], id="page-content", style=CONTENT_STYLE)
+            html.Div([heatmap], className="graph"),
+            html.Div([histogram_plot], className="graph"),   
+    ], className="container"),
+html.Div([
+        html.Div([scatter_chart], className="container1"),
+        ],className="graph")
+                    ], id="page-content", style=CONTENT_STYLE)
  # Create the app layout
 app.layout = html.Div([
     html.Div([
