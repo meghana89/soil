@@ -24,7 +24,7 @@ template=load_figure_template("vapor")
 app = dash.Dash(
 __name__,
    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=.7"}],
-    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.themes.GRID,dbc.icons.FONT_AWESOME],
 )
 app.title = "Soil Moisture Dashboard"
 server = app.server
@@ -90,9 +90,10 @@ histogram_plot = html.Div(children=[
                             ])
                         ])
                         ]),
-                
-                dcc.Graph(id='histogram-plot')]
-                        
+
+                dcc.Graph(id='histogram-plot')
+    
+                ]
                         )
     
 # Create a heatmap
@@ -141,8 +142,7 @@ navbar = dbc.Navbar(className="nav nav-pills",
                                     ])
                 ]),
                 
-                ],
-                    dark=True)
+                ])
 #####################################################
 #                   Call Back                       #
 #####################################################
