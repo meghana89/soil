@@ -10,22 +10,22 @@ import numpy as np
 from datetime import datetime as dt
 import dash_bootstrap_components as dbc
 from dash_bootstrap_components._components.Container import Container
-
 from dash_bootstrap_templates import load_figure_template
 
 
 # This loads all the figure template from dash-bootstrap-templates library,
 # adds the templates to plotly.io and makes the first item the default figure template.
+
 template=load_figure_template("vapor")
+
 #####################################################
 #                    Create the Dash app            #
 ####################################################
 
 app = dash.Dash(
 __name__,
-   meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=.7"}],
-    external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.themes.GRID,dbc.icons.FONT_AWESOME],
-)
+   meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=."}],
+    external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.themes.GRID,dbc.icons.FONT_AWESOME],)
 app.title = "Soil Moisture Dashboard"
 server = app.server
 #basic styling
@@ -59,7 +59,7 @@ df['DOW']=df['date'].dt.day_name()
 scatter_chart = dcc.Graph(id="scatter-chart")
 
 # Create a line chart
-fig =px.line(df,x=df['date'], y=df['segment1(10-30cm)'],template = 'plotly_dark')
+fig =px.line(df,x=df['date'], y=df['segment1(10-30cm)'])
                 
 line_chart = dcc.Graph(id="line-chart",figure=fig)
 # Create a histogram
@@ -89,12 +89,14 @@ histogram_plot = html.Div(children=[
                                     )
                             ])
                         ])
-                        ]),
+                        ],style={
+                                    'padding': '1.3rem',
+                                }),
 
                 dcc.Graph(id='histogram-plot')
     
-                ]
-                        )
+                    ]
+                )
     
 # Create a heatmap
 heatmap = html.Div(
@@ -105,7 +107,10 @@ heatmap = html.Div(
                                     id='Day_filter',
                                     options=['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',],
                                     value=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-                                    )]
+                                    )
+                                ],style={
+                                            'padding': '2rem',
+                                        }
                         ),
                 dcc.Graph(id="heatmap"),
                     ])
@@ -160,16 +165,7 @@ def update_line_chart(start_date, end_date):
     fig =px.line(x=filtered_df['date'], y=filtered_df['segment1(10-30cm)'],template=template)
     
     return fig
-#@app.callback(
-    #dash.dependencies.Output("line-chart", "figure"),
-    #[dash.dependencies.Input("line-chart-dropdown", "value")]
-#)
-#def update_line_chart(selected_column):
-    # Create a line chart using Plotly
-    #df['rolling'] = df[selected_column].rolling(30).mean()
-    #figure=px.line(df, x=df.index, y=[selected_column, "rolling"], title=selected_column,template = 'plotly_dark')
-    #figure = px.line(df, x=df.index, y=selected_column, title=selected_column)
-    #return figure
+
 
     # Function to update the scatter chart
 @app.callback(
@@ -182,7 +178,7 @@ def update_scatter_chart(selected_column,start_date, end_date):
     # Create scatter chart using Plotly
     filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
     figure=px.scatter(x=filtered_df['date'], y=filtered_df[selected_column],  title=selected_column,template=template)
-    #figure = px.scatter(df, x=df['date'], y=selected_column, title=selected_column)
+    
     return figure
 
 # Function to update the histogram
@@ -211,9 +207,9 @@ def filter_heatmap(df2):
     fig = px.imshow(df2, y=df2.index, aspect="auto")
     fig.update_xaxes(side="top")
     
-    #fig.data[0].update(row_filter='x == "DOW"')
-    #fig.show()
+    
     return fig
+
 
 #####################################################
 #             # Create a content layout             #
@@ -224,46 +220,31 @@ content = html.Div(
     children=[
 
                 html.Div([
-                        html.Div([line_chart,scatter_chart ]),
+                        html.Div(
+                            children=[line_chart,scatter_chart,
+                                        html.Div([heatmap, histogram_plot],className="container")
+                                    ]),
                         ],className="container1"),
-                       
+                ])
+
+# Create the app layout
+app.layout = html.Div(
+        children=[
+            # Include the CSS file in the app
+                html.Link(rel='stylesheet', href='/assets/css/style.css'),
+                # header
                 html.Div(
-                            html.Div([heatmap, histogram_plot], 
-                     className="container"),
-)])
- # Create the app layout
-app.layout = html.Div([
-    html.Div([
-# Include the CSS file in the app
-    html.Link(
-        rel='stylesheet',
-        href='/assets/css/style.css'
-    ),
-
-    # header
-    html.Div(
-            [
-                html.Div(
-                    [
-                        html.H1("Soil Moisture Dashboard ", className = "app__header__title",
-                        style={'textAlign': 'center', 'color': colors['text']}),
-                        html.P(
-                            "This app displays charts of soil moisture and other properties over a period",
-                            className = "app__header__title--grey",
-                            style={
-                                        'textAlign': 'center',
-
-                                    }
-                        ),
-                    ],
-                    className = "app__header__desc"
-                ), 
-            ]
-        ),
-    dcc.Location(id="url"), navbar, content])
-    ], className = "main")
-
-    
+                children=[
+                        html.Div(
+                         children= [
+                                    html.H1("Soil Moisture Dashboard"),
+                                    html.H3("This app displays charts of soil moisture and other properties over a period", className="app__header__desc"),
+                                ],
+                            ), 
+                        dcc.Location(id="url"), navbar, content
+                        ])
+                    ],className = "main"
+                    )
 # Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)

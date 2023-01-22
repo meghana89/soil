@@ -1,27 +1,29 @@
 /*To create a 4-grid layout with CSS*/
-
+/*
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   -o-box-sizing: border-box;
   box-sizing: border-box;
-}
+}*/
 
 body {
-  height: 50%;
+
   font-family: 'Open Sans', sans-serif;
   background: #257a6f;
   color: rgb(247, 243, 243);
   font-size: 18px;
   text-align: center;
   letter-spacing: 1.2px;
+  transform: scale(0.9);
   
  /*background: -moz-radial-gradient(0% 100%, ellipse cover, rgba(23, 75, 97, 0.4) 10%, rgba(138, 114, 76, 0) 40%), -moz-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -moz-linear-gradient(-45deg, #670d10 0%, #092756 100%);
   background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(26, 42, 49, 0.4) 10%, rgba(138, 114, 76, 0) 40%), -webkit-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -webkit-linear-gradient(-45deg, #670d10 0%, #092756 100%);
   background: -o-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -o-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -o-linear-gradient(-45deg, #670d10 0%, #092756 100%);
   background: -ms-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -ms-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -ms-linear-gradient(-45deg, #670d10 0%, #092756 100%);
-  */background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), linear-gradient(to bottom, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), linear-gradient(135deg, #670d10 0%, #092756 100%);
+  */
+  background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), linear-gradient(to bottom, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), linear-gradient(135deg, #670d10 0%, #092756 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
 
 }
@@ -45,18 +47,16 @@ margin: .51rem;
 }
 .container {
   display: flex;
-  padding: '20';
-  margin-left: 0;
-
+  padding: 2rem;
+  
+  
 }
- 
+
 
 .container > div {
-border: .29rem solid black;
-box-sizing: border-box;
-border-radius: 15px;
+flex: 2 50%;
 margin: .51rem;
-width: 90%;
+width: 100vw;
 }
 
 .dash-dropdown {
@@ -65,14 +65,15 @@ width: 90%;
   font-size: 1rem;
 }
 
-P {
-  color: rgb(55, 105, 221);
-}
-
 .app__header__desc {
   font-size: 1rem;
   font-weight: bold;
 }
+h1,h2,h3,h4,h5,h6{
+  font-family:"Segoe UI",Arial,sans-serif;
+  font-weight:400;
+  margin:10px 0}
+ 
 
 /* The sidebar menu */
 .nav {
