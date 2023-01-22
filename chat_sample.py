@@ -9,7 +9,14 @@ import plotly.graph_objects as go
 import numpy as np
 from datetime import datetime as dt
 import dash_bootstrap_components as dbc
+from dash_bootstrap_components._components.Container import Container
 
+from dash_bootstrap_templates import load_figure_template
+
+
+# This loads all the figure template from dash-bootstrap-templates library,
+# adds the templates to plotly.io and makes the first item the default figure template.
+template=load_figure_template("vapor")
 #####################################################
 #                    Create the Dash app            #
 ####################################################
@@ -17,7 +24,7 @@ import dash_bootstrap_components as dbc
 app = dash.Dash(
 __name__,
    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=.7"}],
-    external_stylesheets=[dbc.themes.GRID],
+    external_stylesheets=[dbc.themes.BOOTSTRAP],
 )
 app.title = "Soil Moisture Dashboard"
 server = app.server
@@ -57,65 +64,85 @@ fig =px.line(df,x=df['date'], y=df['segment1(10-30cm)'],template = 'plotly_dark'
 line_chart = dcc.Graph(id="line-chart",figure=fig)
 # Create a histogram
 
-histogram_plot = dcc.Graph(id='histogram-plot')
-histogram_dropdown= html.Div(children=[
-                html.Label('Select Histogram Column'),
-                dcc.Dropdown(
-                id="histogram-dropdown",
-                options=[{"label": col, "value": col} for col in df.columns],
-                value=df.columns[1]
+histogram_plot = html.Div(children=[
+                html.H4('Histogram'),
+                dbc.Navbar(className="nav nav-pills",children=[
+                dbc.DropdownMenuItem([html.Div(children=[
+                            html.Label('Bin Slider'),
+                            dcc.Slider(
+                            id='bin-size-slider',
+                            min=10,
+                            max=101,
+                            value=20,
+                            marks={i: str(i) for i in range(10, 110, 10)},
+                            step=None
+                            ),
+            
+                            ])
+                ]),
+                dbc.DropdownMenuItem([html.Div(children=[
+                            html.Label('Select Histogram Column'),
+                            dcc.Dropdown(
+                            id="histogram-dropdown",
+                            options=[{"label": col, "value": col} for col in df.columns],
+                            value=df.columns[1]
+                                    )
+                            ])
+                        ])
+                        ]),
+                
+                dcc.Graph(id='histogram-plot')]
+                        
                         )
-                        ]
-                    )       
+    
 # Create a heatmap
-heatmap = html.Div([
-                #html.H4('Moisture by DOW'),
+heatmap = html.Div(
+    children=[ html.H4('Heatmap of Moisture by DOW'),
+                dbc.Navbar(className="nav",
+                            children=[
+                                    dcc.Checklist(
+                                    id='Day_filter',
+                                    options=['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',],
+                                    value=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                                    )]
+                        ),
                 dcc.Graph(id="heatmap"),
-               # html.P("Day of Week:"),
-                dcc.Checklist(
-                    id='Day_filter',
-                    options=['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',],
-                    value=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-                    
-                ),
-            ])
+                    ])
 
 
-#creating sidebar to access multiple apps
-sidebar = html.Div(
-        [
-        html.Div(children=[
-        html.Label('Select Date Range'),
-        dcc.DatePickerRange(
-                    id='date-picker-range',
-                    start_date=df['date'].min(),
-                    end_date=df['date'].max()
-                        )
-                    ]
-                ),
-            html.Br(),
-            html.Div(children=[
-            html.Label('Scatter Plot'),
-            dcc.Dropdown(
-            id="scatter-chart-dropdown",
-            options=[{"label": col, "value": col} for col in df.columns],
-            value=df.columns[1]
-                    )
-                    ]
-                ),
-            html.Br(),
-            html.Label('Bin Slider'),
-            dcc.Slider(
-                id='bin-size-slider',
-                min=10,
-                max=101,
-                value=20,
-                marks={i: str(i) for i in range(10, 110, 10)},
-                step=None
-            ),
-             html.Div([histogram_dropdown]),
-           ],className='sidebar'
-        )
+# Navbar
+navbar = dbc.Navbar(className="nav nav-pills",
+    children=[
+            ## logo/home
+            ##dbc.NavItem(html.Img(src=app.get_asset_url("logo.PNG"), height="40px")),
+            ## links
+             dbc.DropdownMenuItem(
+                children=[
+                dbc.NavLink("About", href="/", id="about-popover", active=False),
+                dbc.NavLink("Predictions", href="/", id="about-popover", active=False)
+                ]),
+        
+                dbc.DropdownMenuItem([html.Div(children=[
+                            html.Label('Select Date Range'),
+                            dcc.DatePickerRange(
+                                    id='date-picker-range',
+                                    start_date=df['date'].min(),
+                                    end_date=df['date'].max()
+                                        )
+                                         ])
+                                ]),
+                dbc.DropdownMenuItem([html.Div(children=[
+                            html.Label('Scatter Plot'),
+                            dcc.Dropdown(
+                            id="scatter-chart-dropdown",
+                            options=[{"label": col, "value": col} for col in df.columns],
+                            value=df.columns[1]
+                                    )
+                                    ])
+                ]),
+                
+                ],
+                    dark=True)
 #####################################################
 #                   Call Back                       #
 #####################################################
@@ -130,7 +157,7 @@ def update_line_chart(start_date, end_date):
     df['date']= pd.to_datetime(df['date'])
     df['month']=df['date'].dt.month
     filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
-    fig =px.line(x=filtered_df['date'], y=filtered_df['segment1(10-30cm)'])
+    fig =px.line(x=filtered_df['date'], y=filtered_df['segment1(10-30cm)'],template=template)
     
     return fig
 #@app.callback(
@@ -154,7 +181,7 @@ def update_line_chart(start_date, end_date):
 def update_scatter_chart(selected_column,start_date, end_date):
     # Create scatter chart using Plotly
     filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
-    figure=px.scatter(x=filtered_df['date'], y=filtered_df[selected_column],  title=selected_column)
+    figure=px.scatter(x=filtered_df['date'], y=filtered_df[selected_column],  title=selected_column,template=template)
     #figure = px.scatter(df, x=df['date'], y=selected_column, title=selected_column)
     return figure
 
@@ -177,11 +204,11 @@ def update_histogram(value, bin_size):
     return figure
 
 @app.callback(
-    Output("heatmap", "figure"), 
-    Input("Day_filter", "value"))
+    dash.dependencies.Output("heatmap", "figure"), 
+    dash.dependencies.Input("Day_filter", "value"))
 def filter_heatmap(df2):
     df2= df.groupby(by = ["DOW", "Hour"]).mean()['segment1(10-30cm)'].unstack()
-    fig = px.imshow(df2, y=df2.index,color_continuous_scale='Viridis',text_auto=True, aspect="auto")
+    fig = px.imshow(df2, y=df2.index, aspect="auto")
     fig.update_xaxes(side="top")
     
     #fig.data[0].update(row_filter='x == "DOW"')
@@ -193,18 +220,17 @@ def filter_heatmap(df2):
 #####################################################
 
 
-content = html.Div([
-html.Div([
-        html.Div([line_chart], className="graph"),
-        ],className="container1"),
-html.Div([
-            html.Div([heatmap], className="graph"),
-            html.Div([histogram_plot], className="graph"),   
-    ], className="container"),
-html.Div([
-        html.Div([scatter_chart], className="container1"),
-        ],className="graph")
-                    ], id="page-content")
+content = html.Div(
+    children=[
+
+                html.Div([
+                        html.Div([line_chart,scatter_chart ]),
+                        ],className="container1"),
+                       
+                html.Div(
+                            html.Div([heatmap, histogram_plot], 
+                     className="container"),
+)])
  # Create the app layout
 app.layout = html.Div([
     html.Div([
@@ -234,7 +260,7 @@ app.layout = html.Div([
                 ), 
             ]
         ),
-    dcc.Location(id="url"), sidebar, content])
+    dcc.Location(id="url"), navbar, content])
     ], className = "main")
 
     

@@ -143,12 +143,6 @@ body {
     height: 200px;
 }
 
-.login h1 {
-    color: #fff;
-    text-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
-    letter-spacing: 1px;
-    text-align: center;
-}
 
 input {
     width: 100%;
