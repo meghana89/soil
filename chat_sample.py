@@ -61,7 +61,7 @@ scatter_chart = dcc.Graph(id="scatter-chart")
 
 # Create a line chart
 fig =px.line(df,x=df['date'], y=df['segment1(10-30cm)'])
-                
+             
 line_chart = dcc.Graph(id="line-chart",figure=fig)
 # Create a histogram
 
@@ -166,7 +166,7 @@ def update_line_chart(start_date, end_date):
     df['date']= pd.to_datetime(df['date'])
     df['month']=df['date'].dt.month
     filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
-    fig =px.line(x=filtered_df['date'], y=filtered_df['segment1(10-30cm)'],template=template)
+    fig =px.line(filtered_df,x=filtered_df['date'], y=filtered_df['segment1(10-30cm)'],template=template, title="Moisture Content")
     
     return fig
 
@@ -181,7 +181,7 @@ def update_line_chart(start_date, end_date):
 def update_scatter_chart(selected_column,start_date, end_date):
     # Create scatter chart using Plotly
     filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
-    figure=px.scatter(x=filtered_df['date'], y=filtered_df[selected_column],  title=selected_column,template=template)
+    figure=px.scatter(filtered_df,x=filtered_df['date'], y=filtered_df[selected_column],  title=selected_column,template=template)
     
     return figure
 
