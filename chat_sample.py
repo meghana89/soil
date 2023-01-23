@@ -16,8 +16,9 @@ from dash_bootstrap_templates import load_figure_template
 # This loads all the figure template from dash-bootstrap-templates library,
 # adds the templates to plotly.io and makes the first item the default figure template.
 
+#template=load_figure_template("lux")
 template=load_figure_template("vapor")
-
+#template=load_figure_template("plotly-dark")
 #####################################################
 #                    Create the Dash app            #
 ####################################################
@@ -66,7 +67,7 @@ line_chart = dcc.Graph(id="line-chart",figure=fig)
 
 histogram_plot = html.Div(children=[
                 html.H4('Histogram'),
-                dbc.Navbar(className="nav nav-pills",children=[
+                dbc.Navbar(className="navbar bg-dark",children=[
                 dbc.DropdownMenuItem([html.Div(children=[
                             html.Label('Bin Slider'),
                             dcc.Slider(
@@ -90,7 +91,7 @@ histogram_plot = html.Div(children=[
                             ])
                         ])
                         ],style={
-                                    'padding': '1.3rem',
+                                    'padding': '2rem',
                                 }),
 
                 dcc.Graph(id='histogram-plot')
@@ -101,7 +102,7 @@ histogram_plot = html.Div(children=[
 # Create a heatmap
 heatmap = html.Div(
     children=[ html.H4('Heatmap of Moisture by DOW'),
-                dbc.Navbar(className="nav",
+                dbc.Navbar(className="navbar bg-dark",
                             children=[
                                     dcc.Checklist(
                                     id='Day_filter',
@@ -109,7 +110,7 @@ heatmap = html.Div(
                                     value=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
                                     )
                                 ],style={
-                                            'padding': '2rem',
+                                            'padding': '3.5rem',
                                         }
                         ),
                 dcc.Graph(id="heatmap"),
@@ -117,19 +118,22 @@ heatmap = html.Div(
 
 
 # Navbar
-navbar = dbc.Navbar(className="nav nav-pills",
+navbar = dbc.Navbar(className="navbar navbar-expand-lg navbar-dark bg-dark",
     children=[
             ## logo/home
             ##dbc.NavItem(html.Img(src=app.get_asset_url("logo.PNG"), height="40px")),
             ## links
-             dbc.DropdownMenuItem(
+             dbc.NavItem(className="nav_item",
                 children=[
-                dbc.NavLink("About", href="/", id="about-popover", active=False),
-                dbc.NavLink("Predictions", href="/", id="about-popover", active=False)
+                dbc.NavLink("App", href="/", className="nav-link active", active=False)
+                
                 ]),
-        
+        dbc.NavItem(className="nav_item",
+                children=[
+                dbc.NavLink("Predictions Api", href="/",className="nav-link", active=False)
+                ]),
                 dbc.DropdownMenuItem([html.Div(children=[
-                            html.Label('Select Date Range'),
+                            html.Div(html.Label('Select Date Range')),
                             dcc.DatePickerRange(
                                     id='date-picker-range',
                                     start_date=df['date'].min(),
@@ -138,7 +142,7 @@ navbar = dbc.Navbar(className="nav nav-pills",
                                          ])
                                 ]),
                 dbc.DropdownMenuItem([html.Div(children=[
-                            html.Label('Scatter Plot'),
+                            html.Div(html.Label('Scatter Plot')),
                             dcc.Dropdown(
                             id="scatter-chart-dropdown",
                             options=[{"label": col, "value": col} for col in df.columns],
@@ -222,7 +226,11 @@ content = html.Div(
                 html.Div([
                         html.Div(
                             children=[line_chart,scatter_chart,
-                                        html.Div([heatmap, histogram_plot],className="container")
+                            html.Div([
+                                        html.Div([heatmap],className="col-6"),
+                                        html.Div([histogram_plot],className="col-6")
+                            ], className='row')
+                                       
                                     ]),
                         ],className="container1"),
                 ])

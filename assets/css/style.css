@@ -13,10 +13,10 @@ body {
   font-family: 'Open Sans', sans-serif;
   background: #257a6f;
   color: rgb(247, 243, 243);
-  font-size: 18px;
+  font-size: 1.2rem;
   text-align: center;
-  letter-spacing: 1.2px;
-  transform: scale(0.9);
+  letter-spacing: 1px;
+  transform: scale(0.7);
   
  /*background: -moz-radial-gradient(0% 100%, ellipse cover, rgba(23, 75, 97, 0.4) 10%, rgba(138, 114, 76, 0) 40%), -moz-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -moz-linear-gradient(-45deg, #670d10 0%, #092756 100%);
   background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(26, 42, 49, 0.4) 10%, rgba(138, 114, 76, 0) 40%), -webkit-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -webkit-linear-gradient(-45deg, #670d10 0%, #092756 100%);
@@ -40,7 +40,7 @@ margin: 10rem;
 
 .container1 > div {
 height: fit-content;
-border: .29rem solid black;
+border: .29rem solid rgb(46, 13, 63);
 box-sizing: border-box;
 border-radius: 15px;
 margin: .51rem;
@@ -55,59 +55,55 @@ margin: .51rem;
 
 .container > div {
 flex: 2 50%;
-margin: .51rem;
-width: 100vw;
+margin:1rem .51rem;
+height: fit-content;
 }
 
 .dash-dropdown {
   margin-top: 1rem;
-  width: 80%;
-  font-size: 1rem;
+  color: darkslateblue;
 }
 
 .app__header__desc {
   font-size: 1rem;
   font-weight: bold;
 }
-h1,h2,h3,h4,h5,h6{
-  font-family:"Segoe UI",Arial,sans-serif;
-  font-weight:400;
-  margin:10px 0}
- 
+
+
 
 /* The sidebar menu */
-.nav {
-  font-size: "1rem";
-  color: rgb(12, 12, 12);
+.navbar {
+  font-size: "2rem";
   text-align: center;
   text-transform: uppercase;
-  /* 100% Full-height */
+/* 100% Full-height */
   width: 100%;
-  background-color: #424a55;
+  display: flex;
  
 }
 
+
 /* The sidebar links */
-.nav a {
+.navbar a {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   font-size: 25px;
-  display: block;
   transition: 0.3s;
 }
 
+
 /* When you mouse over the navigation links, change their color */
-.nav a:hover {
-  color: #f1f1f1;
+.navbar a:hover {
+  color: #9f0909;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
-  .nav {
+  .navbar {
       padding-top: 15px;
   }
 
-  .nav a {
+  .navbar a {
       font-size: 18px;
   }
 }
