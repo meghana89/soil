@@ -11,6 +11,7 @@ from datetime import datetime as dt
 import dash_bootstrap_components as dbc
 from dash_bootstrap_components._components.Container import Container
 from dash_bootstrap_templates import load_figure_template
+import dash_daq as daq
 
 
 # This loads all the figure template from dash-bootstrap-templates library,
@@ -55,18 +56,40 @@ df['DOW']=df['date'].dt.day_name()
 #                Create Dropdowns                 #
 #                     #
 ####################################################
+# Create a wind guage and temp guage
+wind_gauge = html.Div([
+    daq.Gauge(
+        id='wind-gauge',
+        #value=5,
+        label='Average Wind Speed',
+        max=df["Magna_6 Wind Speed (m/s)"].max(),
+        min=df["Magna_6 Wind Speed (m/s)"].min(),
+        style={'display': 'block' }
+    )
+])
+
+temp_gauge = html.Div([
+    daq.Gauge(
+        id='temp-gauge',
+        #value=5,
+        label='Average Temp',
+        max=df["Magna_6 Wind Speed (m/s)"].max(),
+        min=df["Magna_6 Wind Speed (m/s)"].min(),
+        style={'display': 'block' }
+    )
+])
 
 # Create a scatter chart
-scatter_chart = dcc.Graph(id="scatter-chart")
+scatter_chart = dcc.Graph(id="scatter-chart",style={'height': '100%'})
 
 # Create a line chart
 fig =px.line(df,x=df['date'], y=df['segment1(10-30cm)'])
              
-line_chart = dcc.Graph(id="line-chart",figure=fig)
+line_chart = dcc.Graph(id="line-chart",figure=fig,style={'height': '100%'})
 # Create a histogram
 
 histogram_plot = html.Div(children=[
-                html.H4('Histogram'),
+                #html.H4('Histogram'),
                 dbc.Navbar(className="navbar bg-dark",children=[
                 dbc.DropdownMenuItem([html.Div(children=[
                             html.Label('Bin Slider'),
@@ -82,7 +105,7 @@ histogram_plot = html.Div(children=[
                             ])
                 ]),
                 dbc.DropdownMenuItem([html.Div(children=[
-                            html.Label('Select Histogram Column'),
+                            html.Label('Select ßColumn'),
                             dcc.Dropdown(
                             id="histogram-dropdown",
                             options=[{"label": col, "value": col} for col in df.columns],
@@ -90,9 +113,7 @@ histogram_plot = html.Div(children=[
                                     )
                             ])
                         ])
-                        ],style={
-                                    'padding': '2rem',
-                                }),
+                        ]),
 
                 dcc.Graph(id='histogram-plot')
     
@@ -109,9 +130,7 @@ heatmap = html.Div(
                                     options=['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',],
                                     value=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
                                     )
-                                ],style={
-                                            'padding': '3.5rem',
-                                        }
+                                ]
                         ),
                 dcc.Graph(id="heatmap"),
                     ])
@@ -125,21 +144,21 @@ navbar = dbc.Navbar(className="navbar navbar-expand-lg navbar-dark bg-dark",
             ## links
              dbc.NavItem(className="nav_item",
                 children=[
-                dbc.NavLink("App", href="/", className="nav-link active", active=False)
-                
-                ]),
-        dbc.NavItem(className="nav_item",
+                dbc.NavLink("App", href="/", className="nav-link active", active=True)
+                            ]),
+            dbc.NavItem(className="nav_item",
                 children=[
                 dbc.NavLink("Predictions Api", href="/",className="nav-link", active=False)
-                ]),
-                dbc.DropdownMenuItem([html.Div(children=[
+                            ]),
+                dbc.DropdownMenuItem([html.Div(
+                children=[
                             html.Div(html.Label('Select Date Range')),
                             dcc.DatePickerRange(
                                     id='date-picker-range',
                                     start_date=df['date'].min(),
                                     end_date=df['date'].max()
                                         )
-                                         ])
+                            ])
                                 ]),
                 dbc.DropdownMenuItem([html.Div(children=[
                             html.Div(html.Label('Scatter Plot')),
@@ -155,7 +174,28 @@ navbar = dbc.Navbar(className="navbar navbar-expand-lg navbar-dark bg-dark",
 #####################################################
 #                   Call Back                       #
 #####################################################
+# Function to update Wind Guage
+@app.callback(
+    dash.dependencies.Output('wind-gauge', 'value'),
+    dash.dependencies.Input('date-picker-range', 'start_date'),
+    dash.dependencies.Input('date-picker-range', 'end_date')
+)
+def update_output(start_date, end_date):
+    data = df[(df.date >= start_date) & (df.date <= end_date)]
+    value = data['Magna_6 Wind Speed (m/s)'].mean()
+    return value
+# Function to update temp Guage
+@app.callback(
+    dash.dependencies.Output('temp-gauge', 'value'),
+    dash.dependencies.Input('date-picker-range', 'start_date'),
+    dash.dependencies.Input('date-picker-range', 'end_date')
+)
+def update_output(start_date, end_date):
+    data = df[(df.date >= start_date) & (df.date <= end_date)]
+    value = data["Magna_6 Meteo Ambient Temperature (C)"].mean()
+    return value
 
+  
 # Function to update the line chart
 @app.callback(
     dash.dependencies.Output('line-chart', 'figure'),
@@ -171,7 +211,7 @@ def update_line_chart(start_date, end_date):
     return fig
 
 
-    # Function to update the scatter chart
+# Function to update the scatter chart
 @app.callback(
     dash.dependencies.Output("scatter-chart", "figure"),
     [dash.dependencies.Input("scatter-chart-dropdown", "value"),
@@ -181,7 +221,7 @@ def update_line_chart(start_date, end_date):
 def update_scatter_chart(selected_column,start_date, end_date):
     # Create scatter chart using Plotly
     filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
-    figure=px.scatter(filtered_df,x=filtered_df['date'], y=filtered_df[selected_column],  title=selected_column,template=template)
+    figure=px.scatter(filtered_df,x=filtered_df['date'], y=filtered_df[selected_column],  title=selected_column, )
     
     return figure
 
@@ -203,6 +243,8 @@ def update_histogram(value, bin_size):
     #figure=px.histogram(df,x=[value],nbinsx=bin_size, template = 'plotly_dark' )
     return figure
 
+
+# Function to update the heatmap
 @app.callback(
     dash.dependencies.Output("heatmap", "figure"), 
     dash.dependencies.Input("Day_filter", "value"))
@@ -214,24 +256,29 @@ def filter_heatmap(df2):
     
     return fig
 
-
 #####################################################
 #             # Create a content layout             #
 #####################################################
 
 
 content = html.Div(
-    children=[
-
-                html.Div([
+        children=[
+                html.Div(
+                    children=[
+                        html.Div([
+                        html.Div([wind_gauge,temp_gauge], className='col-3'),
+                       #html.Div([temp_gauge], className='col-3'),
+                        html.Div([line_chart],className="col-9")
+                        ], className='row'),
                         html.Div(
-                            children=[line_chart,scatter_chart,
-                            html.Div([
-                                        html.Div([heatmap],className="col-6"),
-                                        html.Div([histogram_plot],className="col-6")
-                            ], className='row')
-                                       
-                                    ]),
+                            children=[
+                                html.Div([
+                                    html.Div([histogram_plot], className='col-6'),
+                                    html.Div([scatter_chart], className='col-6')
+                                    ],className='row'),
+                                
+                                ]),
+                                html.Div([heatmap],className="row")
                         ],className="container1"),
                 ])
 
