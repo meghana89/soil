@@ -233,14 +233,23 @@ def update_output(start_date, end_date):
 @app.callback(
     dash.dependencies.Output('line-chart', 'figure'),
     [dash.dependencies.Input('date-picker-range', 'start_date'),
-     dash.dependencies.Input('date-picker-range', 'end_date')])
+     dash.dependencies.Input('date-picker-range', 'end_date'),
+     dash.dependencies.Input("violin-chart-dropdown", "value")])
 
-def update_line_chart(start_date, end_date):
+def update_line_chart(start_date, end_date, selected_column):
     df['date']= pd.to_datetime(df['date'])
     df['month']=df['date'].dt.month
-    filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
-    fig =px.line(filtered_df,x=filtered_df['date'], y=filtered_df['segment1(10-30cm)'],template=template, title="Moisture Content")
-    
+    data = df[(df['date'] > start_date) & (df['date'] < end_date)]
+    #fig =px.line(filtered_df,x=filtered_df['date'], y=filtered_df['segment1(10-30cm)'],template=template, title="Moisture Content")
+    fig = { 
+        'data': [
+                {'x': data['date'], 'y': data['segment1(10-30cm)'], 'type': 'line', 'name': 'Soil Moisture'},
+                {'x': data['date'], 'y': data[selected_column], 'type': 'line', 'name': selected_column}
+            ],
+            'layout': {
+                'title': 'Segment 1 (10-30cm) Analysis',
+                'labels': {'x':"Date"},
+            }   }
     return fig
 
 
