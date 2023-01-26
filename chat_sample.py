@@ -16,9 +16,36 @@ import dash_daq as daq
 
 # This loads all the figure template from dash-bootstrap-templates library,
 # adds the templates to plotly.io and makes the first item the default figure template.
-
+templates = [
+    "bootstrap",
+    "cerulean",
+    "cosmo",
+    "cyborg",
+    "darkly",
+    "flatly",
+    "journal",
+    "litera",
+    "lumen",
+    "lux",
+    "materia",
+    "minty",
+    "morph",
+    "pulse",
+    "quartz",
+    "sandstone",
+    "simplex",
+    "sketchy",
+    "slate",
+    "solar",
+    "spacelab",
+    "superhero",
+    "united",
+    "vapor",
+    "yeti",
+    "zephyr",
+]
 #template=load_figure_template("lux")
-template=load_figure_template("vapor")
+template=load_figure_template(templates[2])
 #template=load_figure_template("plotly-dark")
 #####################################################
 #                    Create the Dash app            #
@@ -64,7 +91,7 @@ wind_gauge = html.Div([
         label='Average Wind Speed',
         max=df["Magna_6 Wind Speed (m/s)"].max(),
         min=df["Magna_6 Wind Speed (m/s)"].min(),
-        style={'display': 'block' }
+        #style={'display': 'block' }
     )
 ])
 
@@ -75,12 +102,12 @@ temp_gauge = html.Div([
         label='Average Temp',
         max=df["Magna_6 Wind Speed (m/s)"].max(),
         min=df["Magna_6 Wind Speed (m/s)"].min(),
-        style={'display': 'block' }
+        #style={'display': 'block' }
     )
 ])
 
-# Create a scatter chart
-scatter_chart = dcc.Graph(id="scatter-chart",style={'height': '100%'})
+# Create a violin chart
+violin_chart = dcc.Graph(id="violin-chart",style={'height': '100%'})
 
 # Create a line chart
 fig =px.line(df,x=df['date'], y=df['segment1(10-30cm)'])
@@ -94,14 +121,20 @@ histogram_plot = html.Div(children=[
                 dbc.DropdownMenuItem([html.Div(children=[
                             html.Label('Bin Slider'),
                             dcc.Slider(
-                            id='bin-size-slider',
-                            min=10,
-                            max=101,
-                            value=20,
-                            marks={i: str(i) for i in range(10, 110, 10)},
-                            step=None
-                            ),
-            
+                                            id="bin-size-slider",
+                                            min=1,
+                                            max=100,
+                                            step=1,
+                                            value=10,
+                                            updatemode="drag",
+                                            marks={
+                                                20: {"label": "20"},
+                                                40: {"label": "40"},
+                                                60: {"label": "60"},
+                                                80: {"label": "80"},
+                                                100: {"label": "100"},
+                                            },
+                                        )
                             ])
                 ]),
                 dbc.DropdownMenuItem([html.Div(children=[
@@ -161,9 +194,9 @@ navbar = dbc.Navbar(className="navbar navbar-expand-lg navbar-dark bg-dark",
                             ])
                                 ]),
                 dbc.DropdownMenuItem([html.Div(children=[
-                            html.Div(html.Label('Scatter Plot')),
+                            html.Div(html.Label('violin Plot')),
                             dcc.Dropdown(
-                            id="scatter-chart-dropdown",
+                            id="violin-chart-dropdown",
                             options=[{"label": col, "value": col} for col in df.columns],
                             value=df.columns[1]
                                     )
@@ -213,16 +246,18 @@ def update_line_chart(start_date, end_date):
 
 # Function to update the scatter chart
 @app.callback(
-    dash.dependencies.Output("scatter-chart", "figure"),
-    [dash.dependencies.Input("scatter-chart-dropdown", "value"),
-    dash.dependencies.Input('date-picker-range', 'start_date'),
-        dash.dependencies.Input('date-picker-range', 'end_date')]
+    dash.dependencies.Output("violin-chart", "figure"),
+    [dash.dependencies.Input("violin-chart-dropdown", "value")]
+   # dash.dependencies.Input('date-picker-range', 'start_date'),
+       # dash.dependencies.Input('date-picker-range', 'end_date')]
 )
-def update_scatter_chart(selected_column,start_date, end_date):
+def update_violin_chart(selected_column):
     # Create scatter chart using Plotly
-    filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
-    figure=px.scatter(filtered_df,x=filtered_df['date'], y=filtered_df[selected_column],  title=selected_column, )
-    
+    #filtered_df = df[(df['date'] > start_date) & (df['date'] < end_date)]
+    #figure=px.scatter(filtered_df,x=filtered_df['date'], y=filtered_df[selected_column],  title=selected_column, )
+    figure = px.violin(df, y=[selected_column], box=True, # draw box plot inside the violin
+    #points='all',  can be 'outliers', or False
+               )
     return figure
 
 # Function to update the histogram
@@ -266,15 +301,15 @@ content = html.Div(
                 html.Div(
                     children=[
                         html.Div([
-                        html.Div([wind_gauge,temp_gauge], className='col-3'),
+                        html.Div([wind_gauge,temp_gauge], className='col-2'),
                        #html.Div([temp_gauge], className='col-3'),
-                        html.Div([line_chart],className="col-9")
+                        html.Div([line_chart],className="col-10")
                         ], className='row'),
                         html.Div(
                             children=[
                                 html.Div([
                                     html.Div([histogram_plot], className='col-6'),
-                                    html.Div([scatter_chart], className='col-6')
+                                    html.Div([violin_chart], className='col-6')
                                     ],className='row'),
                                 
                                 ]),
