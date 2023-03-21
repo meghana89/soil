@@ -1,0 +1,120 @@
+/*To create a 4-grid layout with CSS*/
+/*
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+}*/
+
+body {
+  margin-top: 0;
+  font-family: 'Open Sans', sans-serif;
+  background: #257a6f;
+  color: rgb(247, 243, 243);
+  text-align: center;
+  letter-spacing: 1px;
+  transform: scale(0.8);
+  
+ /*background: -moz-radial-gradient(0% 100%, ellipse cover, rgba(23, 75, 97, 0.4) 10%, rgba(138, 114, 76, 0) 40%), -moz-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -moz-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+  background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(26, 42, 49, 0.4) 10%, rgba(138, 114, 76, 0) 40%), -webkit-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -webkit-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+  background: -o-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -o-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -o-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+  background: -ms-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), -ms-linear-gradient(top, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), -ms-linear-gradient(-45deg, #670d10 0%, #092756 100%);
+  */
+  background: -webkit-radial-gradient(0% 100%, ellipse cover, rgba(104, 128, 138, .4) 10%, rgba(138, 114, 76, 0) 40%), linear-gradient(to bottom, rgba(57, 173, 219, .25) 0%, rgba(42, 60, 87, .4) 100%), linear-gradient(135deg, #b2a9aa 0%, #092756 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3E1D6D', endColorstr='#092756', GradientType=1);
+
+}
+/* 
+.main > div{
+  display: flex;
+  flex-direction: column;
+
+transition: margin-left .5s;
+If you want a transition effect 
+margin: 10rem;
+}*/
+
+
+.container1 > div {
+height: fit-content;
+border: .29rem solid rgb(241, 241, 241);
+box-sizing: border-box;
+border-radius: 15px;
+margin: .51rem;
+}
+
+.dash-dropdown {
+  margin-top: 1rem;
+  color: rgb(20, 75, 74);
+}
+
+.app__header__desc {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+
+/* The sidebar links */
+.navbar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  transition: 0.3s;
+}
+
+
+h1,h2,h3,h4,h5,h6{
+  font-family:"Segoe UI",Arial,sans-serif;
+  font-weight:400;
+  margin:10px 0}
+ 
+
+/* The sidebar menu */
+.navbar {
+  font-size: "2rem";
+  font-size: "2rem";
+  text-align: center;
+  text-transform: uppercase;
+  /* 100% Full-height */
+  width: 100%;
+  background-color: #424a55;
+ 
+}
+
+/* The sidebar links */
+.navbar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  display: block;
+  transition: 0.3s;
+  
+}
+
+/* When you mouse over the navigation links, change their color */
+.navbar a:hover {
+  color: #9f0909;
+  transform: scale(1.1);
+}
+/* The graphs
+.row > div {
+  transform: scale(.9);
+}*/
+
+/* When you mouse over the navigation links, change their color 
+.row >div:hover {
+  transform: scale(1);
+}*/
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .navbar {
+      padding-top: 15px;
+  }
+
+  .navbar a {
+      font-size: 18px;
+      transform: scale(1.1);
+  }
+}

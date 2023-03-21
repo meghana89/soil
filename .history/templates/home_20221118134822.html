@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Predict Soil Moisture Content</title>
+        <meta name="viewport" content="width=device-width, initial-scale=.8">
+        <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+        <link type="text/css" rel="stylesheet" href="../static/style.css">
+
+    </head>
+
+    <body>
+        <div class="login">
+            <h1>Soil Moisture Forecasting</h1>
+            <div class="container text-center">
+                <!-- Form to enter new data for predictions  -->
+                
+                <div class="row align-items-start">
+                <form action="{{ url_for('predict')}}" method="POST">
+                    <div class="col-6">
+                       
+                            <input type="number" name="Magna_6 Meteo Air Pressure (hpa)" placeholder="Magna_6 Meteo Air Pressure (hpa)" required="required" /><br>
+                            <input type="number" name="Magna_6 Meteo Dew Point Temperature (C)" placeholder="Magna_6 Meteo Dew Point Temperature (C)" required="required" /><br>
+                            <input type="number" name="Magna_6 Water EC muS/cm" placeholder="Magna_6 Water EC muS/cm" required="required" /><br>
+                            <input type="number" name="Magna_6 Water Level Above Sensor mm" placeholder="Magna_6 Water Level Above Sensor mm" required="required" /><br>
+                            <input type="number" name="segment1(EC)" placeholder="segment1(EC)" required="required" /><br>
+                            <input type="number" name="Magna_6 PH" placeholder="Magna_6 PH" required="required" /><br>
+                            <input type="number"name="Magna_6 ORP_mV" placeholder="Magna_6 ORP_mV" required="required" /><br>
+                            <input type="number" name="Magna_6 pH_Sensor_Temperature_C" placeholder="Magna_6 pH_Sensor_Temperature_C" required="required" /><br>
+                            <input type="number" name="Air Pressure (x10)" placeholder="Air Pressure (x10)" required="required" /><br>
+                        
+                    </div>
+                    <div class="col-6">
+                       
+                            <input type="number" name="Dew Point Temperature (x10)" placeholder="Dew Point Temperature (x10)" required="required" /><br>
+                            <input type="number" name="Magna_6 Cumulative Precipitation_mm" placeholder="Magna_6 Cumulative Precipitation_mm" required="required" /><br>
+                            <input type="number" name="Magna_6 CTD_Temperature_C" placeholder="Magna_6 CTD_Temperature_C" required="required" /><br>
+                            <input type="number" name="CTD_Pressure_BAR" placeholder="CTD_Pressure_BAR" required="required" /><br>
+                            <input type="number" name="CTD_Conductivity__mS" placeholder="CTD_Conductivity__mS" required="required" /><br>
+                            <input type="number" name="Metres above MSL" placeholder="Metres above MSL" required="required" /><br>
+                            <input type="number"name="TOW _MH2O" placeholder="TOW _MH2O" required="required" /><br>
+                            <input type="number" name="Magna_6 Wind Direction" placeholder="Magna_6 Wind Direction" required="required" /><br>
+                      
+                    </div>
+                </form>
+                    <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+                </div>
+          
+            </div>
+        </div>
+        <br>
+        <br>
+        {{pred}}
+      
+        
+    </body>
+
+</html>
